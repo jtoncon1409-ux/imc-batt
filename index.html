@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAT | Calcula tu IMC</title>
+  <style>
+    :root{
+      --bat-navy:#0d2b61;
+      --bat-blue:#1f65b7;
+      --bat-cyan:#3bc7df;
+      --bat-light:#f3f7fb;
+      --bat-card:#ffffff;
+      --text:#18212f;
+      --muted:#667085;
+      --border:#d7e0ea;
+      --danger:#b42318;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(59,199,223,.28), transparent 30%),
+        radial-gradient(circle at 90% 90%, rgba(31,101,183,.28), transparent 30%),
+        linear-gradient(145deg, #071b3d 0%, var(--bat-navy) 52%, #164e84 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px 18px;
+    }
+
+    .card{
+      width:min(100%, 470px);
+      background:var(--bat-card);
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 22px 60px rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.18);
+    }
+
+    .brand-header{
+      min-height:138px;
+      padding:24px 28px 22px;
+      background:#12346f;
+      border-bottom:5px solid var(--bat-cyan);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+
+    .brand-header img{
+      display:block;
+      width:190px;
+      max-width:68%;
+      height:auto;
+      margin:0 auto;
+      object-fit:contain;
+      filter:brightness(0) invert(1);
+    }
+
+    .brand-fallback{
+      display:none;
+      color:#ffffff;
+      font-size:34px;
+      font-weight:800;
+      letter-spacing:.16em;
+    }
+
+    .content{
+      padding:30px 28px 28px;
+    }
+
+    h1{
+      margin:0 0 8px;
+      color:var(--bat-navy);
+      font-size:30px;
+      line-height:1.1;
+      letter-spacing:-.02em;
+    }
+
+    .eyebrow{
+      margin:0 0 8px;
+      color:var(--bat-blue);
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    .subtitle{
+      margin:0 0 25px;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:15px;
+    }
+
+    .field{margin-bottom:18px}
+
+    label{
+      display:block;
+      font-weight:700;
+      margin-bottom:8px;
+      color:var(--bat-navy);
+    }
+
+    input{
+      width:100%;
+      padding:14px 15px;
+      border:1.5px solid var(--border);
+      border-radius:12px;
+      font-size:17px;
+      outline:none;
+      background:#fff;
+      color:var(--text);
+      transition:border-color .15s ease, box-shadow .15s ease;
+    }
+
+    input:focus{
+      border-color:var(--bat-cyan);
+      box-shadow:0 0 0 4px rgba(59,199,223,.16);
+    }
+
+    button{
+      width:100%;
+      border:0;
+      border-radius:12px;
+      padding:14px 16px;
+      font-size:16px;
+      font-weight:800;
+      cursor:pointer;
+      transition:transform .08s ease, filter .15s ease;
+    }
+
+    button:active{transform:translateY(1px)}
+
+    .primary{
+      background:linear-gradient(90deg, var(--bat-navy), var(--bat-blue));
+      color:white;
+      box-shadow:0 8px 18px rgba(13,43,97,.18);
+    }
+
+    .primary:hover{filter:brightness(1.05)}
+
+    .linkbtn{
+      background:transparent;
+      color:var(--bat-blue);
+      font-weight:700;
+      margin-top:12px;
+      padding:9px;
+    }
+
+    .hidden{display:none}
+
+    .hello{
+      background:linear-gradient(90deg, rgba(59,199,223,.12), rgba(31,101,183,.08));
+      border:1px solid rgba(31,101,183,.14);
+      color:var(--bat-navy);
+      border-radius:13px;
+      padding:13px 14px;
+      margin-bottom:22px;
+      font-weight:800;
+    }
+
+    .privacy-note{
+      margin:20px 0 0;
+      padding-top:16px;
+      border-top:1px solid #e7edf3;
+      font-size:12px;
+      line-height:1.45;
+      color:var(--muted);
+      text-align:center;
+    }
+
+    .error{
+      color:var(--danger);
+      font-size:14px;
+      margin-top:8px;
+      font-weight:600;
+    }
+
+    @media (max-width:480px){
+      body{padding:14px}
+      .brand-header{padding:20px 22px 16px}
+      .content{padding:25px 22px 24px}
+      h1{font-size:27px}
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <header class="brand-header">
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/b/b0/BAT_logo_better_tomorrow_2.png"
+        alt="BAT - A Better Tomorrow"
+        onerror="this.style.display='none';document.getElementById('brandFallback').style.display='block';"
+      />
+      <div id="brandFallback" class="brand-fallback">BAT<br><span style="font-size:10px;letter-spacing:.22em;font-weight:500;">A BETTER TOMORROW</span></div>
+    </header>
+
+    <div class="content">
+    <section id="registro">
+      <p class="eyebrow">Bienestar</p>
+      <h1>Conoce tu IMC</h1>
+      <p class="subtitle">Regístrate una sola vez. Este navegador recordará tu nombre para tus próximas mediciones.</p>
+
+      <div class="field">
+        <label for="nombre">Nombre completo</label>
+        <input id="nombre" type="text" autocomplete="name" placeholder="Ej. Juan David Toncón" />
+        <div id="errorNombre" class="error"></div>
+      </div>
+
+      <button class="primary" id="btnRegistro">Continuar</button>
+      <p class="privacy-note">Tu nombre se solicitará solo en tu primera visita desde este navegador.</p>
+    </section>
+
+    <section id="medicion" class="hidden">
+      <p class="eyebrow">Bienestar</p>
+      <h1>Conoce tu IMC</h1>
+      <div class="hello" id="saludo"></div>
+
+      <div class="field">
+        <label for="peso">Peso (kg)</label>
+        <input id="peso" type="number" min="20" max="350" step="0.1" inputmode="decimal" placeholder="Ej. 82.0" />
+      </div>
+
+      <div class="field">
+        <label for="estatura">Estatura (cm)</label>
+        <input id="estatura" type="number" min="100" max="250" step="0.1" inputmode="decimal" placeholder="Ej. 182" />
+      </div>
+
+      <div id="errorMedicion" class="error"></div>
+
+      <button class="primary" id="btnCalcular">Calcular IMC</button>
+      
+      <div id="resultado" class="result hidden" style="margin-top:22px;padding:20px;border-radius:16px;background:#f8fafc;text-align:center;border:1px solid var(--border);">
+        <div class="small" style="font-size:13px;color:var(--muted);">Tu IMC es</div>
+        <div id="imcValor" style="font-size:48px;font-weight:800;margin:6px 0;color:var(--bat-navy);">--</div>
+        <div id="imcCategoria" style="font-size:15px;font-weight:700;color:var(--bat-blue);"></div>
+        <div id="redirMsg" style="font-size:13px;color:var(--muted);margin-top:12px;">
+          En unos segundos abriremos el formulario para registrar tu medición.
+        </div>
+      </div>
+
+<button class="linkbtn" id="btnCambiar">¿No eres esta persona? Cambiar usuario</button>
+      <p class="privacy-note">Al calcular, se abrirá Microsoft Forms con la información prellenada para que confirmes el envío.</p>
+    </section>
+    </div>
+  </main>
+
+<script>
+  const FORM_BASE = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx";
+  const FORM_ID = "dHSc_x1CV0mNR8S2TeyHtRoeb6ZGoQdPuUTmNG1GBtdUMjFSR0o2S0dVQlBZUTRGUUc2N0RaWUFWRC4u";
+
+  // IDs de preguntas obtenidos del vínculo prellenado del usuario.
+  const FIELD_USER_ID = "reec11396aae5432885faf3f699cdfe30";
+  const FIELD_NAME = "r268da79092674ce29fbc458d1682dae8";
+  const FIELD_WEIGHT = "r30e85479ffe04ec094272d9b3ca95daf";
+  const FIELD_HEIGHT = "re03ad215ef9e4225ab1db29066bf0a25";
+
+  const LS_ID = "imc_usuario_id";
+  const LS_NAME = "imc_usuario_nombre";
+
+  const registro = document.getElementById("registro");
+  const medicion = document.getElementById("medicion");
+  const nombreInput = document.getElementById("nombre");
+  const saludo = document.getElementById("saludo");
+  const pesoInput = document.getElementById("peso");
+  const estaturaInput = document.getElementById("estatura");
+  const resultado = document.getElementById("resultado");
+  const imcValor = document.getElementById("imcValor");
+  const imcCategoria = document.getElementById("imcCategoria");
+  const redirMsg = document.getElementById("redirMsg");
+
+  function crearIdUsuario() {
+    if (window.crypto && crypto.randomUUID) {
+      return "USR-" + crypto.randomUUID();
+    }
+    return "USR-" + Date.now() + "-" + Math.random().toString(36).slice(2,10);
+  }
+
+  function categoriaIMC(imc) {
+    if (imc < 18.5) return "Bajo peso";
+    if (imc < 25) return "Peso saludable";
+    if (imc < 30) return "Sobrepeso";
+    return "Obesidad";
+  }
+
+  function cargarUsuario() {
+    const id = localStorage.getItem(LS_ID);
+    const nombre = localStorage.getItem(LS_NAME);
+
+    if (id && nombre) {
+      registro.classList.add("hidden");
+      medicion.classList.remove("hidden");
+      saludo.textContent = "Hola, " + nombre + " 👋";
+    } else {
+      registro.classList.remove("hidden");
+      medicion.classList.add("hidden");
+    }
+  }
+
+  document.getElementById("btnRegistro").addEventListener("click", () => {
+    const nombre = nombreInput.value.trim();
+    const error = document.getElementById("errorNombre");
+    error.textContent = "";
+
+    if (nombre.length < 3) {
+      error.textContent = "Escribe tu nombre completo.";
+      return;
+    }
+
+    localStorage.setItem(LS_ID, crearIdUsuario());
+    localStorage.setItem(LS_NAME, nombre);
+    cargarUsuario();
+  });
+
+  document.getElementById("btnCalcular").addEventListener("click", () => {
+    const peso = Number(String(pesoInput.value).replace(",", "."));
+    const estaturaCm = Number(String(estaturaInput.value).replace(",", "."));
+    const error = document.getElementById("errorMedicion");
+    error.textContent = "";
+    resultado.classList.add("hidden");
+
+    if (!peso || peso < 20 || peso > 350) {
+      error.textContent = "Revisa el peso ingresado.";
+      return;
+    }
+
+    if (!estaturaCm || estaturaCm < 100 || estaturaCm > 250) {
+      error.textContent = "Revisa la estatura ingresada.";
+      return;
+    }
+
+    const idUsuario = localStorage.getItem(LS_ID);
+    const nombre = localStorage.getItem(LS_NAME);
+
+    if (!idUsuario || !nombre) {
+      error.textContent = "No encontramos el usuario guardado. Regístrate nuevamente.";
+      return;
+    }
+
+    const estaturaM = estaturaCm / 100;
+    const imc = Math.round((peso / (estaturaM * estaturaM)) * 10) / 10;
+
+    imcValor.textContent = imc.toFixed(1).replace(".", ",");
+    imcCategoria.textContent = categoriaIMC(imc);
+    redirMsg.textContent = "Tu medición está lista. Abriendo el formulario para registrarla...";
+    resultado.classList.remove("hidden");
+
+    const params = new URLSearchParams();
+    params.set("id", FORM_ID);
+    params.set(FIELD_USER_ID, idUsuario);
+    params.set(FIELD_NAME, nombre);
+    params.set(FIELD_WEIGHT, String(peso));
+    params.set(FIELD_HEIGHT, String(estaturaCm));
+
+    const formUrl = FORM_BASE + "?" + params.toString();
+
+    // Da tiempo para que la persona vea su resultado antes de abrir Forms.
+    setTimeout(() => {
+      window.location.href = formUrl;
+    }, 3000);
+  });
+
+  document.getElementById("btnCambiar").addEventListener("click", () => {
+    const confirmar = confirm("¿Quieres borrar el usuario guardado en este navegador?");
+    if (!confirmar) return;
+
+    localStorage.removeItem(LS_ID);
+    localStorage.removeItem(LS_NAME);
+    pesoInput.value = "";
+    estaturaInput.value = "";
+    resultado.classList.add("hidden");
+    cargarUsuario();
+  });
+
+  cargarUsuario();
+</script>
+</body>
+</html>
